@@ -1,15 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Login Temperatures | <%= title %></title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login Temperatures | <%= title %></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
-
 <body>
-<h1>Register Page</h1>
-</body>
+<div class="container">
+    <div class="row justify-content-md-center mt-5">
+        <div class="col-sm-6">
+            <h2>Register</h2>
 
+            <% if(message.length > 0) { %>
+                <div class="alert alert-danger"><%= message %></div>
+            <% } %>
+
+            <form action="/register" method="post">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" name="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" class="form-control" name="password">
+                </div>
+
+                <button type="submit" class="btn btn-succcess btn-lg">Register</button>
+            </form>
+            <hr>
+
+            <p>Need an account <a href="/register">Register</a></p>
+            <p>Go Back <a href="/">Home</a>.</p>
+        </div>
+    </div>
+</div>
+</body>
+<script src="js/bootstrap.bundle.min.js"></script>
 </html>
