@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Login Temperatures | <%= title %></title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <%- include("./partials/header.ejs") %>
 </head>
 
-<body>
+<body id="body">
+<%- include("./partials/nav.ejs") %>
+
 <div class="container">
     <div class="row justify-content-md-center mt-5">
         <div class="col-sm-6">
-            <h1>Hello World!</h1>
+            <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4">Hi there!</h1>
+                <p class="lead">Explore more with the single signup or if you're already a member then login to
+                    continue.</p>
+                <p>
+                    <a href="#" class="btn btn-primary my-2">Signup</a>
+                    <a href="#" class="btn btn-secondary my-2">Login</a>
+                </p>
+            </div>
         </div>
     </div>
 </div>
 
+<%- include("./partials/footer.ejs") %>
 </body>
-<script src="js/bootstrap.bundle.min.js"></script>
 </html>
