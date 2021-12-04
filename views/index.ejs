@@ -7,41 +7,93 @@
 <body id="body">
 <%- include("./partials/nav.ejs") %>
 
-<div class="container">
-    <div class="row justify-content-md-center mt-5">
-        <div class="col-sm-6">
-            <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-                <h1 class="display-4">Hi there!</h1>
-                <p>  <%= user.fullname %></p>
+<div v-cloak id="app" class="container">
+    <div class="row justify-content-md-center mt-2">
+        <div class="col-sm-12">
+            <div class="pricing-header px-3 py-3 pt-md-5 pb-md-5 mx-auto text-center">
+                <h1 class="display-4">Hi there <%= user.username %> !</h1>
                 <p class="lead">Explore more with the single signup or if you're already a member then login to
                     continue.</p>
-                <p>
-                    <a href="#" class="btn btn-primary my-2">myData</a>
-                    <a href="#" class="btn btn-secondary my-2">Login</a>
-                </p>
+                <div class="card card-block card-outline-primary">
+                    <div class="card-body">
+                        <div class=" float-right btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn   btn-group mr-2" role="group" aria-label="First group">
+                                <button type="button" class="btn btn-primary" v-on:click="filterByTemp">Highest to the
+                                    Lowest Temp
+                                </button>
+                                <button type="button" class="btn btn-secondary" v-on:click="reset">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<div v-cloak id="app" class="container">
-
+    <div class="row">
+        <div class="col-6">
+            <ul v-for="item in LkData" class="list-group list-group-flush">
+                <li class="list-group-item">{{ item.temp }}</li>
+            </ul>
+        </div>
+        <div class="col-6">
+            <ul v-for="item in AuData" class="list-group list-group-flush">
+                <li class="list-group-item">{{ item.temp }}</li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <%- include("./partials/footer.ejs") %>
 <script>
     let app = new Vue({
         el: '#app',
-        data: {},
-        mounted: function () {
-            axios.get(`${window.location.origin}/get-weather`)
-                .then(response => console.log(response))
-                .catch(err => {
-                    // Manage the state of the application if the request
-                    // has failed
-                })
+        data: {
+            data: [],
+            LkData: [],
+            AuData: []
         },
-        methods: {}
+        mounted: function () {
+            this.initData();
+        },
+        methods: {
+            reset: function () {
+                console.log("filter");
+                this.LkData = this.countryFilter(this.data, 'sri_lanka');
+                this.AuData = this.countryFilter(this.data, 'au');
+            },
+            filterByTemp: function () {
+                this.LkData = this.sorting(this.LkData);
+                this.AuData = this.sorting(this.AuData);
+            },
+            initData: function () {
+                Swal.fire({
+                    title: 'Please Wait!',
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+                axios.get(`${window.location.origin}/get-weather`).then(response => {
+                    this.data = response.data.data;
+                    this.LkData = this.countryFilter(response.data.data, 'sri_lanka')
+                    this.AuData = this.countryFilter(response.data.data, 'au')
+                    Swal.close();
+                }).catch(err => {
+                    Swal.close();
+                })
+            },
+            sorting: function (data) {
+                data.sort((a, b) => b - a);
+                return data
+            },
+            countryFilter: function (data, country) {
+                const filteredData = [];
+                data.forEach(element => {
+                    if (element.country === country) filteredData.push(element)
+                });
+                return filteredData;
+            }
+        }
     })
 </script>
 </body>

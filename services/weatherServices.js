@@ -5,7 +5,7 @@ let getWeatherByUserId = (user_id) => {
         try {
             connection.query("SELECT * from weather where user_id = ?", user_id, function (error, rows) {
                 if (error) reject(error);
-                if (rows.length > 0) resolve(rows[0]);
+                if (rows.length > 0) resolve(rows);
                 resolve(false);
             })
         } catch (e) {
