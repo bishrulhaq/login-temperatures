@@ -12,7 +12,7 @@
         <div class="col-sm-6">
             <h2 class="mb-5">Login</h2>
 
-            <form class="needs-validation" method="post" @submit.prevent="signIn">
+            <form v-cloak class="needs-validation" method="post" @submit.prevent="signIn">
                 <div class="form-group">
                     <label>Username</label>
                     <input type="text" class="form-control" v-model="username" name="username">
@@ -111,16 +111,27 @@
 
                 if (validate === true) {
 
+                    Swal.fire({
+                        title: 'Please Wait!',
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                    });
+
+
                     await axios.post(`${window.location.origin}/login`, {
                         username: this.username,
                         password: this.password
                     })
                         .then((response) => {
+                            Swal.close();
                             if (response.status === 200) {
                                 window.location.href = "/";
                             }
                         })
                         .catch((error) => {
+                            Swal.close();
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',

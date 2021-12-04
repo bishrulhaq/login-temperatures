@@ -12,7 +12,7 @@
         <div class="col-sm-6">
             <h2 class="mb-5">Register</h2>
 
-            <form method="post" @submit.prevent="register">
+            <form v-cloak method="post" @submit.prevent="register">
                 <div class="form-group">
                     <label>Username</label>
                     <input type="text" class="form-control" v-model="username" name="username">

@@ -2,17 +2,31 @@
 <html lang="en">
 <head>
     <%- include("./partials/header.ejs") %>
+    <style>
+        body {
+            background: #dedede;
+        }
+
+        .page-wrap {
+            min-height: 100vh;
+        }
+    </style>
 </head>
 <body id="body">
-<div class="container">
-    <div class="row justify-content-md-center mt-5">
-        <div class="col-sm-6">
-            <h1>404 Error! Page Not Found.</h1>
+<div class="page-wrap d-flex flex-row align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center">
+                <span class="display-1 d-block">404</span>
+                <div class="mb-4 lead">The page you are looking for was not found.</div>
+                <a href="/" class="btn btn-link">Back to Home</a>
+            </div>
         </div>
     </div>
 </div>
 
 
+
+<%- include("./partials/footer.ejs") %>
 </body>
-<script src="js/bootstrap.bundle.min.js"></script>
 </html>
