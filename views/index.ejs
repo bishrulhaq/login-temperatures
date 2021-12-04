@@ -11,9 +11,8 @@
     <div class="row justify-content-md-center mt-2">
         <div class="col-sm-12">
             <div class="pricing-header px-3 py-3 pt-md-5 pb-md-5 mx-auto text-center">
-                <h1 class="display-4">Hi there <%= user.username %> !</h1>
-                <p class="lead">Explore more with the single signup or if you're already a member then login to
-                    continue.</p>
+                <h1 class="display-4">Hi there <b><%= user.username %></b></h1>
+                <p class="lead">Check how's the weather today!</p>
                 <div class="card card-block card-outline-primary">
                     <div class="card-body">
                         <div class=" float-right btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -31,13 +30,15 @@
     </div>
     <div class="row">
         <div class="col-6">
+            <h3>Western Province, Sri Lanka</h3>
             <ul v-for="item in LkData" class="list-group list-group-flush">
-                <li class="list-group-item">{{ item.temp }}</li>
+                <li class="list-group-item">{{ item.place }} | {{ item.temp }} | {{item.date | dateFilter}}</li>
             </ul>
         </div>
         <div class="col-6">
+            <h3>Perth , Australia</h3>
             <ul v-for="item in AuData" class="list-group list-group-flush">
-                <li class="list-group-item">{{ item.temp }}</li>
+                <li class="list-group-item">{{ item.place }} | {{ item.temp }} | {{item.date | dateFilter}}</li>
             </ul>
         </div>
     </div>
@@ -45,6 +46,7 @@
 
 <%- include("./partials/footer.ejs") %>
 <script>
+
     let app = new Vue({
         el: '#app',
         data: {
@@ -55,11 +57,15 @@
         mounted: function () {
             this.initData();
         },
+        filters: {
+            dateFilter(str) {
+                return moment(str).format('MMMM Do YYYY, h:mm:ss a');
+            }
+        },
         methods: {
             reset: function () {
-                console.log("filter");
-                this.LkData = this.countryFilter(this.data, 'sri_lanka');
-                this.AuData = this.countryFilter(this.data, 'au');
+                this.LkData = this.countryFilter(this.data, 'LK');
+                this.AuData = this.countryFilter(this.data, 'AU');
             },
             filterByTemp: function () {
                 this.LkData = this.sorting(this.LkData);
@@ -75,22 +81,38 @@
                 });
                 axios.get(`${window.location.origin}/get-weather`).then(response => {
                     this.data = response.data.data;
-                    this.LkData = this.countryFilter(response.data.data, 'sri_lanka')
-                    this.AuData = this.countryFilter(response.data.data, 'au')
+                    this.LkData = this.countryFilter(response.data.data, 'LK')
+                    this.AuData = this.countryFilter(response.data.data, 'AU')
                     Swal.close();
                 }).catch(err => {
                     Swal.close();
                 })
             },
             sorting: function (data) {
-                data.sort((a, b) => b - a);
+                Swal.fire({
+                    title: 'Please Wait!',
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+                data.sort((a, b) => b.temp - a.temp);
+                Swal.close();
                 return data
             },
             countryFilter: function (data, country) {
+                Swal.fire({
+                    title: 'Please Wait!',
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
                 const filteredData = [];
                 data.forEach(element => {
                     if (element.country === country) filteredData.push(element)
                 });
+                Swal.close();
                 return filteredData;
             }
         }

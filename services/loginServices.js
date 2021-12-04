@@ -22,15 +22,23 @@ const addWeatherInfo = (user) => {
         const country = "sri_lanka";
         const temp = "sri_lanka";
         try {
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=colombo&appid=${process.env.OPEN_WEATHER_API}`;
+            const url = `https://api.openweathermap.org/data/2.5/group?id=1223421,2063523&appid=${process.env.OPEN_WEATHER_API}`;
             request(url, function (err, response, body) {
                 if (!err) {
-                    console.log(body);
-                    connection.query("INSERT INTO weather (country,user_id,temp) VALUES (?,?,?)", [country, user.id, temp], function (error, rows) {
-                        if (error) reject(error);
-                        let weather_data = rows[0];
-                        resolve(weather_data);
-                    });
+                    const data = JSON.parse(body);
+                    const date = new Date();
+                    console.log(date);
+                    if (data) {
+                        connection.query("INSERT INTO weather (country,date,place,user_id,temp) VALUES (?,?,?,?,?),(?,?,?,?,?)",
+                            [data.list[0].sys.country, date, data.list[0].name, user.id,
+                                data.list[0].main.temp, data.list[1].sys.country, date, data.list[1].name,
+                                user.id, data.list[1].main.temp],
+                            function (error, rows) {
+                                if (error) reject(error);
+                                let weather_data = rows[0];
+                                resolve(weather_data);
+                            });
+                    }
                 }
             });
         } catch (e) {
