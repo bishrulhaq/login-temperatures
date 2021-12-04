@@ -7,23 +7,39 @@
 <body id="body">
 <%- include("./partials/nav.ejs") %>
 
-<div class="container">
+<div id="server" class="container">
     <div class="row justify-content-md-center mt-5">
         <div class="col-sm-6">
             <h2>Register</h2>
 
-            <% if(message.length > 0) { %>
-                <div class="alert alert-danger"><%= message %></div>
-            <% } %>
-
-            <form action="/register" method="post">
+            <form method="post" @submit.prevent="register">
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" name="username">
+                    <input type="text" class="form-control" v-model="username" name="username">
+                    <div v-if="errors.username != ''" class="invalid">
+                        <span>{{errors.username}}</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="text" class="form-control" name="password">
+                    <input type="password" class="form-control" v-model="password" name="password">
+                    <div v-if="errors.password.required != ''" class="invalid">
+                        <span>{{errors.password.required}}</span>
+                    </div>
+                    <div v-if="errors.password.char != ''" class="invalid">
+                        <span>{{errors.password.char}}</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" class="form-control" v-model="confirmPassword" name="confirmPassword">
+                    <div v-if="errors.confirmPassword.required != ''" class="invalid">
+                        <span>{{errors.confirmPassword.required}}</span>
+                    </div>
+                    <div v-if="errors.confirmPassword.match != ''" class="invalid">
+                        <span>{{errors.confirmPassword.match}}</span>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-succcess btn-lg">Register</button>
@@ -35,6 +51,89 @@
         </div>
     </div>
 </div>
+
+<%- include("./partials/footer.ejs") %>
+<script>
+    let server = new Vue({
+        el: '#server',
+        data: {
+            errors: {
+                username: '',
+                password: {
+                    required: '',
+                    char: ''
+                },
+                confirmPassword: {
+                    required: '',
+                    match: ''
+                }
+            },
+            username: '',
+            password: '',
+            confirmPassword: ''
+        },
+        methods: {
+            nullCheck: function (value, field) {
+                if (value == null || value == '') {
+                    return field + " cannot be empty";
+                }
+                return '';
+            },
+            charLong: function (value, field, from, to) {
+                if (value.length < from || value.length > to) {
+                    return field + " should be six to 10 characters long";
+                }
+                return '';
+            },
+            passwordMatch: function (password, confirmPassword) {
+                if (password != confirmPassword) {
+                    return "Confirm Password is not the same";
+                }
+                return '';
+            },
+            register: async function () {
+
+                this.errors = {
+                    username: '',
+                    password: {
+                        required: '',
+                        char: ''
+                    },
+                    confirmPassword: {
+                        required: '',
+                        match: ''
+                    }
+                };
+
+                this.errors.username = this.nullCheck(this.username, 'Username');
+                this.errors.password.required = this.nullCheck(this.password, 'Password');
+                if (!this.errors.password.required) {
+                    this.errors.password.char = this.charLong(this.password, 'Password', 6, 10);
+                }
+
+                this.errors.confirmPassword.required = this.nullCheck(this.confirmPassword, 'Confirm Password');
+                if (!this.errors.confirmPassword.required) {
+                    this.errors.confirmPassword.match = this.passwordMatch(this.password, this.confirmPassword);
+                }
+
+                const validate = (this.errors.username || this.errors.password.required || this.errors.password.char || this.errors.confirmPassword.match) === '';
+
+                if (validate === true) {
+                    $.ajax({
+                        url: `${window.location.origin}/register-user`,
+                        method: "POST",
+                        data: {username: this.username, password: this.password},
+                        success: function (data) {
+                            window.location.href = "/";
+                        },
+                        error: function (err) {
+
+                        }
+                    })
+                }
+            }
+        }
+    })
+</script>
 </body>
-<script src="js/bootstrap.bundle.min.js"></script>
 </html>

@@ -1,5 +1,5 @@
 # Login Temperatures
-A web app that will store the current temperature of two cities when a user logs in, and display a historical list of the users login temperatures.
+A web server that will store the current temperature of two cities when a user logs in, and display a historical list of the users login temperatures.
 
 ## Technologies Used
 * Node JS, EJS for Templating
@@ -8,3 +8,5 @@ A web app that will store the current temperature of two cities when a user logs
 
 ## Things to Do
 1. Run npm install
+2. Change .env.example to .env
+3. Ddd the relevant sql database credentials to .env
