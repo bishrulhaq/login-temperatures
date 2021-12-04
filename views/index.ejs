@@ -24,6 +24,25 @@
     </div>
 </div>
 
+<div id="app" class="container">
+
+</div>
+
 <%- include("./partials/footer.ejs") %>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {},
+        mounted: function () {
+            axios.get(`${window.location.origin}/get-weather`)
+                .then(response => console.log(response))
+                .catch(err => {
+                    // Manage the state of the application if the request
+                    // has failed
+                })
+        },
+        methods: {}
+    })
+</script>
 </body>
 </html>

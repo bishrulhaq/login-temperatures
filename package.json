@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/bishrulhaq/login-temperatures#readme",
   "dependencies": {
+    "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.6",
@@ -27,6 +28,7 @@
     "express-session": "^1.17.2",
     "mysql2": "^2.3.3",
     "passport": "^0.4.1",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "request": "^2.88.2"
   }
 }

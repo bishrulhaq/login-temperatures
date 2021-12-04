@@ -2,9 +2,9 @@ const connection = require("../config/dbConnection");
 const bcrypt = require("bcryptjs");
 
 let createNewUser = (user) => {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
-            let check = await checkUserName(user.username);
+            const check = await checkUserName(user.username);
             if (check === false) {
                 // hashing
                 let salt = bcrypt.genSaltSync(10);
@@ -13,14 +13,14 @@ let createNewUser = (user) => {
                     password: bcrypt.hashSync(user.password, salt)
                 };
 
-                //create a new user
-                connection.query("INSERT INTO users set ? ", data, function(error, rows) {
+                // create a new user
+                connection.query("INSERT INTO users set ? ", data, function (error, rows) {
                     if (error) reject(error);
                     resolve("create a new user successfully");
                 })
             }
             if (check === true)
-                reject(`The email ${user.email} has already exist. Please choose another email`)
+                reject(`The username: ${user.username} has already exist. Please choose another username`)
 
         } catch (e) {
             reject(e);
@@ -31,7 +31,7 @@ let createNewUser = (user) => {
 let checkUserName = (username) => {
     return new Promise((resolve, reject) => {
         try {
-            connection.query("SELECT * from users where username = ?", username, function(error, rows) {
+            connection.query("SELECT * from users where username = ?", username, function (error, rows) {
                 if (error) reject(error);
                 if (rows.length > 0) resolve(true);
                 resolve(false);
@@ -42,6 +42,4 @@ let checkUserName = (username) => {
     });
 };
 
-module.exports = {
-    createNewUser: createNewUser
-};
+module.exports = {createNewUser};

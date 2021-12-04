@@ -6,17 +6,15 @@ const getRegisterPage = (req, res) => {
 
 const createNewUser = async (req, res) => {
     try {
-        let data = {
+        const data = {
             username: req.body.username,
             password: req.body.password
         };
 
         await registerService.createNewUser(data);
-        return res.status(200).json({
-            message: "User is Successfully Created!"
-        })
+        return res.status(200).json({message: "Successfully Created!"})
     } catch (e) {
-        return res.status(500).json(e);
+        return res.status(500).json({message: e});
     }
 };
 

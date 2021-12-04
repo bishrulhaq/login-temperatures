@@ -7,16 +7,16 @@ const getLoginPage = (req, res) => {
 const handleLogin = (req, res, next) => {
     passport.authenticate("localLogin", (error, user, info) => {
         if (error) {
-            return res.status(500).json(error);
+            return res.status(500).json({message: error});
         }
         if (!user) {
-            return res.status(401).json(info.message);
+            return res.status(401).json({message: info.message});
         }
         req.login(user, (err) => {
             if (err) {
-                return res.status(500).json(error);
+                return res.status(500).json({message: error});
             } else {
-                return res.status(200).json(user);
+                return res.status(200).json({message: user.username});
             }
         });
     })(req, res, next);

@@ -5,31 +5,31 @@
 </head>
 
 <body id="body">
-<%- include("./partials/nav.ejs") %>s
+<%- include("./partials/nav.ejs") %>
 
-<div id="server" class="container">
-    <div class="row justify-content-md-center mt-5">
+<div id="app" class="container mb-5">
+    <div class="row justify-content-md-center mt-5 mb-5">
         <div class="col-sm-6">
-            <h2>Login</h2>
+            <h2 class="mb-5">Login</h2>
 
             <form class="needs-validation" method="post" @submit.prevent="signIn">
                 <div class="form-group">
                     <label>Username</label>
                     <input type="text" class="form-control" v-model="username" name="username">
-                    <div v-if="errors.username != ''" class="invalid">
-                        Username Cannot Be Empty
+                    <div v-if="errors.username.required != ''" class="invalid">
+                        <span>{{errors.username.required}}</span>
+                    </div>
+                    <div v-if="errors.username.space != ''" class="invalid">
+                        <span>{{errors.username.space}}</span>
                     </div>
 
                 </div>
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" class="form-control" v-model="password" name="password">
-                    <div v-if="errors.password.required != ''" class="invalid">
-                        <span>Password Cannot Be Empty</span>
+                    <div v-if="errors.password.required != ''" class="invalid"><span>{{errors.password.required}}</span>
                     </div>
-                    <div v-if="errors.password.char != ''" class="invalid">
-                        <span>Password must be 6 to 10 Characters Long</span>
-                    </div>
+                    <div v-if="errors.password.char != ''" class="invalid"><span>{{errors.password.char}}</span></div>
                 </div>
 
                 <button type="submit" class="btn btn-succcess btn-lg">Login</button>
@@ -45,11 +45,14 @@
 <%- include("./partials/footer.ejs") %>
 <script>
 
-    let server = new Vue({
-        el: '#server',
+    let app = new Vue({
+        el: '#app',
         data: {
             errors: {
-                username: '',
+                username: {
+                    required: '',
+                    space: ''
+                },
                 password: {
                     required: '',
                     char: ''
@@ -77,32 +80,54 @@
                 }
                 return '';
             },
-            signIn: function () {
+            white_space: function (field) {
+                if (field.split(" ").length - 1 > 0) {
+                    return "Cannot contain whitespaces";
+                }
+            },
+            signIn: async function () {
 
-                this.errors.username = this.nullCheck(this.username, 'username');
+                this.errors = {
+                    username: {
+                        required: '',
+                        space: ''
+                    },
+                    password: {
+                        required: '',
+                        char: ''
+                    }
+                };
+
+                this.errors.username.required = this.nullCheck(this.username, 'Username');
+                if (!this.errors.username.required) {
+                    this.errors.username.space = this.white_space(this.username);
+                }
                 this.errors.password.required = this.nullCheck(this.password, 'password');
                 if (!this.errors.password.required) {
                     this.errors.password.char = this.charLong(this.password, 'password', 6, 10);
                 }
 
-                const validate = (this.errors.username || this.errors.password.required || this.errors.password.char) === '';
+                const validate = (this.errors.username.required || this.errors.username.space || this.errors.password.required || this.errors.password.char) === '';
 
                 if (validate === true) {
-                    $.ajax({
-                        url: `${window.location.origin}/login`,
-                        method: "POST",
-                        dataType: 'json',
-                        data: {username: this.username, password: this.password},
-                        success: function (data) {
-                            window.location.href = "/";
-                        },
-                        error: function (err) {
 
-                        }
+                    await axios.post(`${window.location.origin}/login`, {
+                        username: this.username,
+                        password: this.password
                     })
+                        .then((response) => {
+                            if (response.status === 200) {
+                                window.location.href = "/";
+                            }
+                        })
+                        .catch((error) => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: error.response.data.message,
+                            })
+                        });
                 }
-
-
             }
         }
     })
