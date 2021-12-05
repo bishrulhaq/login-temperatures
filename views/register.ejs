@@ -137,20 +137,38 @@
 
                 if (validate === true) {
 
+                    Swal.fire({
+                        title: 'Please Wait!',
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                    });
+
                     await axios.post(`${window.location.origin}/register-user`, {
                         username: this.username,
                         password: this.password
                     })
                         .then((response) => {
+                            Swal.close();
+
                             if (response.status === 200) {
                                 window.location.href = "/login";
                             }
                         })
                         .catch((error) => {
+                            Swal.close();
+
+                            let err = '';
+                            if (error.response.status === 400) {
+                                error.response.data.message.forEach((item) => {
+                                    err += item.msg + ' for ' + item.param + '\n';
+                                })
+                            }
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: error.response.data.message,
+                                text: err !== '' ? err : error.response.data.message,
                             })
                         });
                 }
