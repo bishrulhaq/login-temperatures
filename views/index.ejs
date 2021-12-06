@@ -17,10 +17,9 @@
                     <div class="card-body">
                         <div class=" float-right btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                             <div class="btn   btn-group mr-2" role="group" aria-label="First group">
-                                <button type="button" class="btn btn-primary" v-on:click="filterByTemp">Highest to the
-                                    Lowest Temp
-                                </button>
                                 <button type="button" class="btn btn-secondary" v-on:click="reset">Reset</button>
+                                <button type="button" class="btn btn-primary" v-on:click="filterByTemp">Hottest First
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -30,15 +29,19 @@
     </div>
     <div class="row">
         <div class="col-6">
-            <h3>Western Province, Sri Lanka</h3>
+            <h3>Colombo, Sri Lanka</h3>
             <ul v-for="item in LkData" class="list-group list-group-flush">
-                <li class="list-group-item">{{ item.place }} | {{ item.temp }} | {{item.date | dateFilter}}</li>
+                <li class="list-group-item"> {{item.date | dateFilter}} {{ item.temp | tempCelsius }} | {{ item.temp |
+                    tempFahrenheit }}
+                </li>
             </ul>
         </div>
         <div class="col-6">
-            <h3>Perth , Australia</h3>
+            <h3>Melbourne , Australia</h3>
             <ul v-for="item in AuData" class="list-group list-group-flush">
-                <li class="list-group-item">{{ item.place }} | {{ item.temp }} | {{item.date | dateFilter}}</li>
+                <li class="list-group-item"> {{item.date | dateFilter}} {{ item.temp | tempCelsius }} | {{ item.temp |
+                    tempFahrenheit }}
+                </li>
             </ul>
         </div>
     </div>
@@ -60,6 +63,13 @@
         filters: {
             dateFilter(str) {
                 return moment(str).format('MMMM Do YYYY, h:mm:ss a');
+            },
+            tempCelsius(str) {
+                return Math.round(parseInt(str)) + '°C';
+            },
+            tempFahrenheit(str) {
+                const temp = parseInt(str) * 9 / 5 + 32
+                return Math.round(temp) + '°F';
             }
         },
         methods: {

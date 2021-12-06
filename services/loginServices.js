@@ -18,34 +18,34 @@ const findUserByUserName = (username) => {
 };
 
 const addWeatherInfo = (user) => {
-    return new Promise((resolve, reject) => {
-        const country = "sri_lanka";
-        const temp = "sri_lanka";
-        try {
-            const url = `https://api.openweathermap.org/data/2.5/group?id=1223421,2063523&appid=${process.env.OPEN_WEATHER_API}`;
-            request(url, function (err, response, body) {
-                if (!err) {
-                    const data = JSON.parse(body);
-                    const date = new Date();
-                    console.log(date);
-                    if (data) {
-                        connection.query("INSERT INTO weather (country,date,place,user_id,temp) VALUES (?,?,?,?,?),(?,?,?,?,?)",
-                            [data.list[0].sys.country, date, data.list[0].name, user.id,
-                                data.list[0].main.temp, data.list[1].sys.country, date, data.list[1].name,
-                                user.id, data.list[1].main.temp],
-                            function (error, rows) {
-                                if (error) reject(error);
-                                let weather_data = rows[0];
-                                resolve(weather_data);
-                            });
-                    }
+        return new Promise((resolve, reject) => {
+                try {
+                    const url = `https://api.openweathermap.org/data/2.5/group?id=${process.env.COUNTRY_CODE_ONE || 1248991},${process.env.COUNTRY_CODE_TWO || 2158177}&units=metric&appid=${process.env.OPEN_WEATHER_API}`;
+                    request(url, function (err, response, body) {
+                        if (!err) {
+                            const data = JSON.parse(body);
+                            const date = new Date();
+                            if (data) {
+                                connection.query("INSERT INTO weather (country,date,place,user_id,temp) VALUES (?,?,?,?,?),(?,?,?,?,?)",
+                                    [data.list[0].sys.country, date, data.list[0].name, user.id,
+                                        data.list[0].main.temp, data.list[1].sys.country, date, data.list[1].name,
+                                        user.id, data.list[1].main.temp],
+                                    function (error, rows) {
+                                        if (error) reject(error);
+                                        let weather_data = rows[0];
+                                        resolve(weather_data);
+                                    });
+                            }
+                        }
+                    });
+                } catch
+                    (e) {
+                    reject(e);
                 }
-            });
-        } catch (e) {
-            reject(e);
-        }
-    })
-};
+            }
+        )
+    }
+;
 
 const compareUserPassword = (user, password) => {
     return new Promise(async (resolve, reject) => {
