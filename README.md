@@ -10,5 +10,5 @@ A web server that will store the current temperature of two cities when a user l
 ## Things to Do
 1. Run npm install
 2. Change .env.example to .env
-3. Add the relevant sql database credentials to .env
+3. Add the relevant config and credentials to .env
 4. Run the SQL File (tables.sql)
